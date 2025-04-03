@@ -1,8 +1,18 @@
-mod utils;
+pub mod utils;
 
 use tsg_core::graph::TSGraph;
 use wasm_bindgen::prelude::*;
 use web_sys::console;
+
+// Initialize panic hook in a function that gets called
+fn init() {
+    utils::set_panic_hook();
+}
+
+#[wasm_bindgen(start)]
+pub fn start() {
+    init();
+}
 
 #[wasm_bindgen]
 extern "C" {

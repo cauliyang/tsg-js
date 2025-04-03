@@ -30,19 +30,36 @@ pub fn add(a: i32, b: i32) -> i32 {
     a + b
 }
 
-// create a function to load a graph from a file
+// Function to load a graph from a raw string (TSG format)
 #[wasm_bindgen]
-pub fn load_graph(file_content: &str) -> Result<(), JsValue> {
-    // Load the graph from the file
-    let graph = TSGraph::from_str(file_content).map_err(|e| JsValue::from_str(&e.to_string()))?;
+pub fn load_graph(raw_content: &str) -> Result<String, JsValue> {
+    console::log_1(&"Loading graph from raw string...".into());
+
+    // Load the graph from the raw string
+    let graph = match TSGraph::from_str(raw_content) {
+        Ok(g) => g,
+        Err(e) => {
+            let error_msg = format!("Failed to parse graph: {}", e);
+            console::error_1(&error_msg.clone().into());
+            return Err(JsValue::from_str(&error_msg));
+        }
+    };
+
+    // Create a summary of the loaded graph
+    let mut summary = String::new();
 
     for (id, graph) in graph.graphs.iter() {
-        alert(&format!(
+        let graph_summary = format!(
             "Graph ID: {} with {} nodes and {} edges",
             id.to_string(),
             graph.nodes().len(),
             graph.edges().len()
-        ));
+        );
+
+        console::log_1(&graph_summary.clone().into());
+        summary.push_str(&graph_summary);
+        summary.push_str("\n");
     }
-    Ok(())
+
+    Ok(summary)
 }

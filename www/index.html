@@ -67,7 +67,7 @@
 
     <div class="section">
       <h2>Graph Functions</h2>
-      <p>Enter a TSG graph JSON below or upload a file:</p>
+      <p>Enter a TSG graph data below or upload a file:</p>
       <textarea id="graph-json">
 {
   "graphs": {
@@ -81,15 +81,31 @@
       ]
     }
   }
-}</textarea
-      >
+}</textarea>
       <div>
-        <input type="file" id="graph-file-input" accept=".json" />
-        <button id="load-file-btn">Load from File</button>
+        <input type="file" id="graph-file-input" accept=".json,.tsg" />
+        <button id="load-file-btn">Load from File to Editor</button>
       </div>
-      <button id="load-graph-btn">Test Load Graph</button>
+      <div style="margin-top: 10px">
+        <button id="load-graph-btn">Load Graph from Editor</button>
+        <button id="load-graph-from-file-btn">
+          Load Graph Directly from File
+        </button>
+      </div>
       <div class="result" id="graph-result">
         Graph operation result will appear here
+      </div>
+      <div id="graph-details" style="margin-top: 10px; display: none">
+        <h3>Graph Details</h3>
+        <pre
+          id="graph-summary"
+          style="
+            background-color: #f8f8f8;
+            padding: 10px;
+            border-radius: 4px;
+            overflow: auto;
+          "
+        ></pre>
       </div>
     </div>
 
@@ -161,8 +177,47 @@
               reader.readAsText(file);
             });
 
+          // Load graph from editor content
           document
             .getElementById("load-graph-btn")
+            .addEventListener("click", () => {
+              try {
+                const graphContent = document.getElementById("graph-json").value;
+
+                if (!graphContent.trim()) {
+                  document.getElementById("graph-result").textContent =
+                    "Please enter graph data in the editor.";
+                  return;
+                }
+
+                // Call the load_graph function with the graph content
+                try {
+                  const result = load_graph(graphContent);
+                  document.getElementById("graph-result").textContent =
+                    "Graph loaded successfully!";
+
+                  // Display graph details
+                  document.getElementById("graph-details").style.display =
+                    "block";
+                  document.getElementById("graph-summary").textContent = result;
+                } catch (e) {
+                  document.getElementById(
+                    "graph-result"
+                  ).textContent = `Error loading graph: ${e.message}`;
+                  document.getElementById("graph-details").style.display =
+                    "none";
+                }
+              } catch (e) {
+                document.getElementById(
+                  "graph-result"
+                ).textContent = `Error: ${e.message}`;
+                document.getElementById("graph-details").style.display = "none";
+              }
+            });
+
+          // Load graph directly from file
+          document
+            .getElementById("load-graph-from-file-btn")
             .addEventListener("click", async () => {
               try {
                 const fileInput = document.getElementById("graph-file-input");
@@ -174,27 +229,46 @@
                   return;
                 }
 
-                // Convert File to ArrayBuffer
-                const arrayBuffer = await file.arrayBuffer();
+                // Read file as text
+                const reader = new FileReader();
 
-                // Create a Uint8Array from the ArrayBuffer
-                const uint8Array = new Uint8Array(arrayBuffer);
+                reader.onload = async (e) => {
+                  try {
+                    const fileContent = e.target.result;
 
-                // Call the load_graph function with the Uint8Array
-                try {
-                  const result = load_graph(uint8Array);
+                    // Call the load_graph function with the file content
+                    const result = load_graph(fileContent);
+                    document.getElementById("graph-result").textContent =
+                      "Graph loaded successfully from file!";
+
+                    // Display graph details
+                    document.getElementById("graph-details").style.display =
+                      "block";
+                    document.getElementById("graph-summary").textContent =
+                      result;
+                  } catch (e) {
+                    document.getElementById(
+                      "graph-result"
+                    ).textContent = `Error loading graph: ${e.message}`;
+                    document.getElementById("graph-details").style.display =
+                      "none";
+                  }
+                };
+
+                reader.onerror = (e) => {
                   document.getElementById(
                     "graph-result"
-                  ).textContent = `Graph loaded successfully: ${result}`;
-                } catch (e) {
-                  document.getElementById(
-                    "graph-result"
-                  ).textContent = `Error loading graph: ${e.message}`;
-                }
+                  ).textContent = `Error reading file: ${e.target.error}`;
+                  document.getElementById("graph-details").style.display =
+                    "none";
+                };
+
+                reader.readAsText(file);
               } catch (e) {
                 document.getElementById(
                   "graph-result"
                 ).textContent = `Error: ${e.message}`;
+                document.getElementById("graph-details").style.display = "none";
               }
             });
         } catch (e) {

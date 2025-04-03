@@ -1,5 +1,5 @@
 {
-  "name": "tsg-core-js",
+  "name": "tsg-core-js-demo",
   "version": "0.1.0",
   "description": "A JavaScript wrapper for the TSG core library",
   "main": "pkg/tsg_core_js.js",

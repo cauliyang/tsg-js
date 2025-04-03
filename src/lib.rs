@@ -32,9 +32,9 @@ pub fn add(a: i32, b: i32) -> i32 {
 
 // create a function to load a graph from a file
 #[wasm_bindgen]
-pub fn load_graph(file_path: &str) -> Result<(), JsValue> {
+pub fn load_graph(file_content: &str) -> Result<(), JsValue> {
     // Load the graph from the file
-    let graph = TSGraph::from_file(file_path).map_err(|e| JsValue::from_str(&e.to_string()))?;
+    let graph = TSGraph::from_str(file_content).map_err(|e| JsValue::from_str(&e.to_string()))?;
 
     for (id, graph) in graph.graphs.iter() {
         alert(&format!(
@@ -44,6 +44,5 @@ pub fn load_graph(file_path: &str) -> Result<(), JsValue> {
             graph.edges().len()
         ));
     }
-
     Ok(())
 }

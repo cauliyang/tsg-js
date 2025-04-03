@@ -1,0 +1,19 @@
+{
+  "name": "tsg-core-js",
+  "version": "0.1.0",
+  "description": "A JavaScript wrapper for the TSG core library",
+  "main": "pkg/tsg_core_js.js",
+  "scripts": {
+    "build": "wasm-pack build --target web",
+    "start": "cd www && python -m http.server 8000",
+    "prepare-www": "mkdir -p www/pkg && cp -r pkg/* www/pkg/",
+    "dev": "npm run build && npm run prepare-www && npm run start"
+  },
+  "keywords": [
+    "wasm",
+    "rust",
+    "graph"
+  ],
+  "author": "Yangyang Li <yangyang.li@northwestern.edu>",
+  "license": "Apache-2.0"
+}

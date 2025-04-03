@@ -21,7 +21,7 @@ extern "C" {
 
 #[wasm_bindgen]
 pub fn greet() {
-    alert("Hello, tsg-js2!");
+    alert("Hello, tsg-core-js!");
 }
 
 // create a fun to add two numbers
@@ -32,20 +32,17 @@ pub fn add(a: i32, b: i32) -> i32 {
 
 // create a function to load a graph from a file
 #[wasm_bindgen]
-pub fn load_graph(file: &str) -> Result<(), JsValue> {
+pub fn load_graph(file_path: &str) -> Result<(), JsValue> {
     // Load the graph from the file
-    let graph = TSGraph::from_file(file).map_err(|e| JsValue::from_str(&e.to_string()))?;
+    let graph = TSGraph::from_file(file_path).map_err(|e| JsValue::from_str(&e.to_string()))?;
 
     for (id, graph) in graph.graphs.iter() {
-        console::log_1(
-            &format!(
-                "Graph ID: {} with {} nodes and {} edges",
-                id.to_string(),
-                graph.nodes().len(),
-                graph.edges().len()
-            )
-            .into(),
-        );
+        alert(&format!(
+            "Graph ID: {} with {} nodes and {} edges",
+            id.to_string(),
+            graph.nodes().len(),
+            graph.edges().len()
+        ));
     }
 
     Ok(())

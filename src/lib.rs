@@ -14,6 +14,12 @@ pub fn start() {
     init();
 }
 
+// ✅ Explicitly export an init function for manual calls
+#[wasm_bindgen]
+pub fn init_wasm() {
+    init();
+}
+
 #[wasm_bindgen]
 extern "C" {
     fn alert(s: &str);

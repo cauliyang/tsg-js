@@ -5,19 +5,13 @@ use wasm_bindgen::prelude::*;
 use web_sys::console;
 
 // Initialize panic hook in a function that gets called
-fn init() {
+fn init_wasm() {
     utils::set_panic_hook();
 }
 
 #[wasm_bindgen(start)]
 pub fn start() {
-    init();
-}
-
-// ✅ Explicitly export an init function for manual calls
-#[wasm_bindgen]
-pub fn init_wasm() {
-    init();
+    init_wasm();
 }
 
 #[wasm_bindgen]

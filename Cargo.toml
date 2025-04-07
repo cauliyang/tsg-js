@@ -1,6 +1,6 @@
 [package]
 name = "tsg-core-js"
-version = "0.1.5"
+version = "0.1.6"
 authors = ["Yangyang Li <yangyang.li@northwestern.edu>"]
 description = "A JavaScript wrapper for the TSG core library"
 repository = "https://github.com/cauliyang/tsg-js"

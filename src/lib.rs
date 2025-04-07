@@ -32,9 +32,8 @@ pub fn add(a: i32, b: i32) -> i32 {
 
 // Function to load a graph from a raw string (TSG format)
 #[wasm_bindgen]
-pub fn load_graph(raw_content: &str) -> Result<String, JsValue> {
+pub fn load_graph(raw_content: &str) -> Result<Vec<String>, JsValue> {
     console::log_1(&"Loading graph from raw string...".into());
-
     // Load the graph from the raw string
     let graph = match TSGraph::from_str(raw_content) {
         Ok(g) => g,
@@ -44,22 +43,20 @@ pub fn load_graph(raw_content: &str) -> Result<String, JsValue> {
             return Err(JsValue::from_str(&error_msg));
         }
     };
+    let mut graph_jsons = Vec::new();
 
-    // Create a summary of the loaded graph
-    let mut summary = String::new();
-
-    for (id, graph) in graph.graphs.iter() {
-        let graph_summary = format!(
-            "Graph ID: {} with {} nodes and {} edges",
-            id.to_string(),
-            graph.nodes().len(),
-            graph.edges().len()
-        );
-
-        console::log_1(&graph_summary.clone().into());
-        summary.push_str(&graph_summary);
-        summary.push_str("\n");
+    for (_id, graph) in graph.graphs.iter() {
+        let graph_json = graph.to_json().unwrap();
+        // Convert serde_json::Value to String
+        let graph_json_str = match serde_json::to_string(&graph_json) {
+            Ok(json_str) => json_str,
+            Err(e) => {
+                let error_msg = format!("Failed to convert graph to JSON: {}", e);
+                console::error_1(&error_msg.clone().into());
+                return Err(JsValue::from_str(&error_msg));
+            }
+        };
+        graph_jsons.push(graph_json_str);
     }
-
-    Ok(summary)
+    Ok(graph_jsons)
 }

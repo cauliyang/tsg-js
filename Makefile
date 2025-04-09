@@ -7,9 +7,6 @@ help: ## Display this help message
 
 .DEFAULT_GOAL := help
 
-build: ## Build the project
-	@echo "Building the project..."
-
 test: ## Run tests
 	@echo "Running tests..."
 

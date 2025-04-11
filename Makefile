@@ -18,5 +18,5 @@ clean: ## Clean build artifacts
 
 wasm: ## Build WebAssembly
 	@echo "Building WebAssembly..."
-	@rm -rf pkg 
+	@rm -rf pkg
 	@wasm-pack build --target web --out-dir pkg

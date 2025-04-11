@@ -99,7 +99,6 @@ pub fn generate_walks(raw_content: &str) -> Result<JsValue, JsValue> {
 #[wasm_bindgen]
 pub fn summary_graph(raw_content: &str) -> Result<String, JsValue> {
     use tsg_core::graph::TSGraphAnalysis;
-
     // Load the graph from the raw string
     let tsgraph = match TSGraph::from_str(raw_content) {
         Ok(g) => g,
@@ -112,5 +111,5 @@ pub fn summary_graph(raw_content: &str) -> Result<String, JsValue> {
 
     // summary is txt format
     let summary = tsgraph.summarize().unwrap();
-    return Ok(summary.to_string());
+    Ok(summary.to_string())
 }
